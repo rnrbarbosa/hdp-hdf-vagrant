@@ -74,18 +74,15 @@ Vagrant.configure("2") do |config|
 
 		if hdp_node[:host] == varAmbariServer
  			puts "Bootstrapping AMBARI...."
-			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-ambari.sh", env: {"OS_TYPE" => "centos7", "AMBARI_SERVER" => '#{varAmbariServer}'}
+			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-ambari.sh", env: {"OS_TYPE" => "centos7", "AMBARI_SERVER" => varAmbariServer }
 			hdp_config.vm.network "forwarded_port", guest: 8080, host: 8080
 		else		
 			puts "Bootstrapping NODE...."
-			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-node.sh", env: {"OS_TYPE" => "centos7","AMBARI_SERVER" => '#{varAmbariServer}'}
+			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-node.sh", env: {"OS_TYPE" => "centos7","AMBARI_SERVER" => varAmbariServer}
 		end
 
-		public_key = File.read("ssh/id_rsa.pub")
-		private_key = File.read("ssh/id_rsa")
-
 		hdp_config.vm.provision :shell, privileged: true, path: "user_data/ssh-setup.sh", 
-					env: {"PUB_KEY" => '#{public_key}',"PRIV_KEY" => '#{private_key}',"AMBARI_SERVER" => '#{varAmbariServer}'}
+					env: {"AMBARI_SERVER" => varAmbariServer}
 
 		'#{varAmbariServer}'
 	end
