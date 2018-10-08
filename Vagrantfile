@@ -23,6 +23,13 @@ hdp_nodes.each do |hdp_node|
 	varHostEntries << "#{hdp_node[:ip]} #{hdp_node[:host]}.#{varDomain} #{hdp_node[:host]}\n"
 end
 
+puts "-------------------------------------------"
+hdp_nodes.each do |hdp_node|
+	puts "#{hdp_node[:host]}.#{varDomain}\n"
+end
+puts "-------------------------------------------"
+
+
 puts varHostEntries
 
 $etchosts = <<SCRIPT
@@ -77,7 +84,7 @@ Vagrant.configure("2") do |config|
 		public_key = File.read("ssh/id_rsa.pub")
 		private_key = File.read("ssh/id_rsa")
 
-		hdp_config.vm.provision :shell, privileged: true, path: "ssh/ssh-setup.sh", 
+		hdp_config.vm.provision :shell, privileged: true, path: "user_data/ssh-setup.sh", 
 					env: {"PUB_KEY" => '#{public_key}',"PRIV_KEY" => '#{private_key}',"AMBARI_SERVER" => '#{varAmbariServer}'}
 
 		'#{varAmbariServer}'
