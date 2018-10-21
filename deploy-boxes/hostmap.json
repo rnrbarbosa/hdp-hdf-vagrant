@@ -1,0 +1,20 @@
+
+{
+    "blueprint": "blueprint-hdfs-ha",
+    "default_password": "changethis",
+    "host_groups": [
+      { "hosts": [
+          { "fqdn": "hdp-ambari.hortonworks.local" }
+        ], "name": "ambari"
+      },
+      { "hosts": [
+          { "fqdn": "hdp-manager.hortonworks.local" }
+        ], "name": "manager"
+      },
+      { "hosts": [
+          { "fqdn": "hdp-node.hortonworks.local" }
+        ],
+        "name": "node"    
+      }
+    ]
+  }

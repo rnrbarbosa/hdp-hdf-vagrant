@@ -1,0 +1,81 @@
+varRamAmbariServer=2048
+varRamAmbariAgent=2048
+
+varDomain = "hortonworks.local"
+
+varAmbariServer = "ambari-server"
+varAmbariAgent= "ambari-agent"
+
+
+hdp_nodes = [
+	{ :host => "#{varAmbariServer}",  :ip => "10.10.67.10", :box => "centos7", :ram => varRamAmbariServer, :cpu => 2, :gui => false },
+	{ :host => "#{varAmbariAgent}",  :ip => "10.10.67.11", :box => "centos7", :ram => varRamAmbariAgent, :cpu => 2, :gui => false },
+]
+
+## ################################################################
+## START - HOSTS FOR GUESTS
+## ################################################################
+varHostEntries = ""
+hdp_nodes.each do |hdp_node|
+	varHostEntries << "#{hdp_node[:ip]} #{hdp_node[:host]}.#{varDomain} #{hdp_node[:host]}\n"
+end
+
+puts "-------------------------------------------"
+hdp_nodes.each do |hdp_node|
+	puts "#{hdp_node[:host]}.#{varDomain}\n"
+end
+puts "-------------------------------------------"
+
+
+puts varHostEntries
+
+$etchosts = <<SCRIPT
+#!/bin/bash
+cat > /etc/hosts <<EOF
+127.0.0.1       localhost
+10.10.67.1      host.#{varDomain} host
+#{varHostEntries}
+EOF
+SCRIPT
+## ################################################################
+## END - HOSTS FOR GUESTS
+## ################################################################
+
+
+Vagrant.configure("2") do |config|
+
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.manage_guest = false
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
+
+  hdp_nodes.each do |hdp_node|
+	config.vm.define hdp_node[:host] do |hdp_config|
+		hdp_config.vm.box = hdp_node[:box]
+		hdp_config.vm.hostname = "#{hdp_node[:host]}.#{varDomain}"
+		hdp_config.vm.network "private_network", ip: hdp_node[:ip], :netmask => "255.255.255.0"
+		hdp_config.hostmanager.aliases = "#{hdp_node[:host]}"
+		hdp_config.vm.provider :virtualbox do |v|
+			v.name = hdp_node[:host].to_s
+			v.gui = hdp_node[:gui]
+			v.customize ["modifyvm", :id, "--memory", hdp_node[:ram].to_s]
+			v.customize ["modifyvm", :id, "--cpus", hdp_node[:cpu].to_s]
+		end
+
+		hdp_config.ssh.forward_agent = true
+		hdp_config.ssh.insert_key = false
+		hdp_config.vm.provision :shell, :inline => $etchosts
+
+		if hdp_node[:host] == varAmbariServer
+			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-ambari.sh", env: {"OS_TYPE" => "centos7", "AMBARI_SERVER" => varAmbariServer }
+			hdp_config.vm.network "forwarded_port", guest: 8080, host: 8080
+		else		
+			hdp_config.vm.provision :shell, privileged: true, path: "user_data/bootstrap-node.sh", env: {"OS_TYPE" => "centos7","AMBARI_SERVER" => varAmbariServer}
+		end
+
+		hdp_config.vm.provision :shell, privileged: true, path: "user_data/ssh-setup.sh", 
+					env: {"AMBARI_SERVER" => varAmbariServer}
+	end
+  end
+end

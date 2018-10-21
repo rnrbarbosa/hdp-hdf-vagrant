@@ -136,10 +136,3 @@ systemctl enable ambari-server
 systemctl restart ambari-server
 
 yum install -y ambari-agent
-
-cd /etc/ambari-agent/conf
-cp /etc/ambari-agent/conf/ambari-agent.ini /etc/ambari-agent/conf/ambari-agent.ini.bak
-sed -i.bak s/hostname=localhost/hostname=${AMBARI_SERVER}/g /etc/ambari-agent/conf/ambari-agent.ini
-
-systemctl enable ambari-agent
-systemctl restart ambari-agent

@@ -1,0 +1,60 @@
+{
+  "host_groups" : [
+    {
+      "name" : "master",
+      "components" : [
+        {
+          "name" : "NAMENODE"
+        },
+        {
+          "name" : "SECONDARY_NAMENODE"
+        },       
+        {
+          "name" : "TIMELINE_READER"
+        },       
+        {
+          "name" : "APP_TIMELINE_SERVER"
+        },       
+        {
+          "name" : "RESOURCEMANAGER"
+        },
+        {
+          "name" : "HISTORYSERVER"
+        },
+        {
+          "name" : "ZOOKEEPER_SERVER"
+        }
+      ],
+      "cardinality" : "1"
+    },
+    {
+      "name" : "slaves",
+      "components" : [
+        {
+          "name" : "DATANODE"
+        },
+        {
+          "name" : "HDFS_CLIENT"
+        },
+        {
+          "name" : "NODEMANAGER"
+        },
+        {
+          "name" : "YARN_CLIENT"
+        },
+        {
+          "name" : "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name" : "ZOOKEEPER_CLIENT"
+        }
+      ],
+      "cardinality" : "1+"
+    }
+  ],
+  "Blueprints" : {
+    "blueprint_name" : "scigility-3nodes",
+    "stack_name" : "HDP",
+    "stack_version" : "3.0"
+  }
+}
