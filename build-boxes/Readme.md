@@ -31,6 +31,19 @@ For the ssh use:
 username: vagrant
 ``` 
 
+# Building the boxes
 
+```
+vagrant package --base ambari-server --output ambari-server.box
+vagrant package --base ambari-node --output ambari-node.box
+```
+
+# Add Boxes
+
+```
+vagrant box add ambari-server ambari-server.box
+vagrant box add ambari-agent ambari-node.box
+rm ambari-*
+```
 
 

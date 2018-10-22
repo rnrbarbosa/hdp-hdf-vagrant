@@ -1,15 +1,15 @@
 varRamAmbariServer=2048
-varRamAmbariAgent=2048
+varRamAmbariNode=2048
 
 varDomain = "hortonworks.local"
 
 varAmbariServer = "ambari-server"
-varAmbariAgent= "ambari-agent"
+varAmbariNode= "ambari-node"
 
 
 hdp_nodes = [
 	{ :host => "#{varAmbariServer}",  :ip => "10.10.67.10", :box => "centos7", :ram => varRamAmbariServer, :cpu => 2, :gui => false },
-	{ :host => "#{varAmbariAgent}",  :ip => "10.10.67.11", :box => "centos7", :ram => varRamAmbariAgent, :cpu => 2, :gui => false },
+	{ :host => "#{varAmbariNode}",  :ip => "10.10.67.11", :box => "centos7", :ram => varRamAmbariNode, :cpu => 2, :gui => false },
 ]
 
 ## ################################################################
