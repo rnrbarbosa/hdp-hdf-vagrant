@@ -92,7 +92,7 @@ ambari-server install-mpack \
 --mpack=./hdf-ambari-mpack-3.2.0.0-520.tar.gz \
 --verbose -s && rm ./hdf-ambari-mpack-3.2.0.0-520.tar.gz
 
-sed -i.bak 's/ambari/ranger,rangerkms,oozie,druid,hive,superset,registry,streamline,ambari/g' /var/lib/pgsql/data/pg_hba.conf
+sed -i.bak 's/ambari/rangeradmin,rangerkms,oozie,druid,hive,superset,registry,streamline,ambari/g' /var/lib/pgsql/data/pg_hba.conf
 
 sudo -u postgres bash -c "psql <<EOF
 CREATE DATABASE ranger;
